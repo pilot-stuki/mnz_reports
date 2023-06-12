@@ -69,13 +69,13 @@ services:
       - OFFSET_STORAGE_TOPIC=inventory.offset
       - STATUS_STORAGE_TOPIC=inventory.status
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: mssql
     ports:
      - 1433:1433
     environment:
      - ACCEPT_EULA=Y
-     - MSSQL_PID=Standard
-     - SA_PASSWORD=Password!
+     - MSSQL_SA_PASSWORD=Password!
      - MSSQL_AGENT_ENABLED=true
   kafdrop:
     image: obsidiandynamics/kafdrop
