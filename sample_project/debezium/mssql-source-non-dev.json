@@ -1,16 +1,14 @@
 {
   "name": "inventory-connector",
   "config": {
-    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
-    "tasks.max": "1",
-    "database.hostname": "mysql",
-    "database.port": "3306",
-    "database.user": "debezium",
-    "database.password": "dbz",
-    "database.server.id": "184054",
-    "database.server.name": "dbserver1",
-    "topic.prefix": "dbserver1",  
-    "database.include.list": "inventory",
+    "connector.class" : "io.debezium.connector.sqlserver.SqlServerConnector",
+    "tasks.max" : "1",
+    "topic.prefix" : "server1",
+    "database.hostname" : "sqlserver",
+    "database.port" : "1433",
+    "database.user" : "sa",
+    "database.password" : "Password!",
+    "database.names" : "testDB",
     "database.history.kafka.bootstrap.servers": "redpanda:9092",
     "database.history.kafka.topic": "schema-changes.inventory",
     "key.converter": "io.confluent.connect.avro.AvroConverter",
@@ -19,6 +17,7 @@
     "value.converter.schema.registry.url": "http://redpanda:8081",
     "internal.key.converter": "org.apache.kafka.connect.json.JsonConverter",
     "internal.value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "value.converter.schemas.enable": true
+    "value.converter.schemas.enable": true,
+    "database.encrypt": "false"
   }
 }

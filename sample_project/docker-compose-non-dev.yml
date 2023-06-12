@@ -54,13 +54,12 @@ services:
       - materialized
     ports:
       - "3030:3000"
-
   debezium:
     image: debezium/connect:1.9
     container_name: debezium
     depends_on:
       - redpanda
-      - mysql
+      - sqlserver
     ports:
       - "8083:8083"
     environment:
@@ -69,14 +68,15 @@ services:
       - CONFIG_STORAGE_TOPIC=inventory.configs
       - OFFSET_STORAGE_TOPIC=inventory.offset
       - STATUS_STORAGE_TOPIC=inventory.status
-  mysql:
-    image: debezium/example-mysql
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
-      - "3306:3306"
+     - 1433:1433
     environment:
-      MYSQL_ROOT_PASSWORD: debezium
-      MYSQL_USER: mysqluser
-      MYSQL_PASSWORD: mysqlpw
+     - ACCEPT_EULA=Y
+     - MSSQL_PID=Standard
+     - SA_PASSWORD=Password!
+     - MSSQL_AGENT_ENABLED=true
   kafdrop:
     image: obsidiandynamics/kafdrop
     container_name: kafdrop

@@ -29,5 +29,5 @@ dispatch:
   - macro_namespace: audit_helper
     search_order: [materialize_dbt_utils, audit_helper]
 vars:
-  db: "inventory"
-  dbsrv: "dbserver1"
+  db: "testDB"
+  dbsrv: "server1"
