@@ -18,11 +18,21 @@ services:
      - --set redpanda.enable_transactions=true
      - --set redpanda.enable_idempotence=true
      - --set redpanda.auto_create_topics_enabled=true
+           # Redpanda brokers use the RPC API to communicate with each other internally.
+     - --rpc-addr redpanda:33145
+     - --advertise-rpc-addr redpanda:33145
     ports:
       - "9092:9092"
       - "8082:8082"
       - "8081:8081"
-    healthcheck: { test: curl -f localhost:9644/v1/status/ready, interval: 1s, start_period: 30s }
+      - "9644:9644"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
   materialized:
     image: materialize/materialized
     container_name: materialized
@@ -54,36 +64,24 @@ services:
       - materialized
     ports:
       - "3030:3000"
-  debezium:
-    image: debezium/connect:1.9
-    container_name: debezium
-    depends_on:
-      - redpanda
-      - sqlserver
+  nifi:
+    build:
+      context: .
+      dockerfile: nifi/Dockerfile
+    container_name: nifi
     ports:
-      - "8083:8083"
+      - 8080:8080
     environment:
-      - BOOTSTRAP_SERVERS=redpanda:9092
-      - GROUP_ID=1
-      - CONFIG_STORAGE_TOPIC=inventory.configs
-      - OFFSET_STORAGE_TOPIC=inventory.offset
-      - STATUS_STORAGE_TOPIC=inventory.status
+      - NIFI_WEB_HTTP_PORT=8080
+#testDB block start   
   sqlserver:
     image: mcr.microsoft.com/azure-sql-edge:latest
-    container_name: mssql
+    container_name: sqlserver
+    hostname: sqlserver
     ports:
      - 1433:1433
     environment:
      - ACCEPT_EULA=Y
      - MSSQL_SA_PASSWORD=Password!
      - MSSQL_AGENT_ENABLED=true
-  kafdrop:
-    image: obsidiandynamics/kafdrop
-    container_name: kafdrop
-    ports:
-      - "9900:9900"
-    environment:
-      KAFKA_BROKERCONNECT: "redpanda:9092"
-      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
-    depends_on:
-      - redpanda
+#testDB block end

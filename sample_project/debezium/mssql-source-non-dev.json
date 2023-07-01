@@ -9,14 +9,13 @@
     "database.user" : "sa",
     "database.password" : "Password!",
     "database.names" : "testDB",
+    "database.history": "io.debezium.relational.history.KafkaDatabaseHistory",
     "database.history.kafka.bootstrap.servers": "redpanda:9092",
     "database.history.kafka.topic": "schema-changes.inventory",
     "key.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
     "key.converter.schema.registry.url": "http://redpanda:8081",
     "value.converter.schema.registry.url": "http://redpanda:8081",
-    "internal.key.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "internal.value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": true,
     "database.encrypt": "false"
   }
